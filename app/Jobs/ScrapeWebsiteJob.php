@@ -19,34 +19,30 @@ class ScrapeWebsiteJob extends Job
 
     public function handle()
     {
-        // Continue with scraping...
         try {
             $browser = new HttpBrowser(HttpClient::create());
             $scrapedData = [];
 
-            foreach ($validatedData['urls'] as $url) {
+            foreach ($this->scrapingJob->urls as $url) {
                 $crawler = $browser->request('GET', $url);
-                foreach ($validatedData['selectors'] as $selector) {
+                foreach ($this->scrapingJob->selectors as $selector) {
                     $scrapedData[$url][$selector] = $crawler->filter($selector)->each(function ($node) {
                         return $node->text();
                     });
                 }
             }
 
-            $job->scraped_data = $scrapedData;
-            $job->save();
+            $this->scrapingJob->scraped_data = $scrapedData;
+            $this->scrapingJob->status = 'completed';
+            $this->scrapingJob->save();
 
-        }catch(Exception $e){
-            // Log the error or handle it as needed
+        } catch (Exception $e) {
             Log::error('Scraping error: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred during scraping: ' . $e->getMessage()], 500);
-        }
 
-        // Return response
-        return response()->json([
-            'success' => true,
-            'data' => $scrapedData,
-        ]);
+            $this->scrapingJob->status = 'failed';
+            $this->scrapingJob->save();
+        }
     }
 }
+
 
