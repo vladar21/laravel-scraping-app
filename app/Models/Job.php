@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Job extends Model
 {
-    protected $fillable = ['urls', 'selectors', 'scraped_data'];
+    protected $fillable = ['urls', 'selectors', 'scraped_data', 'status'];
 
     protected $casts = [
         'urls' => 'array',
