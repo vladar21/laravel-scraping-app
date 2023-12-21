@@ -2,17 +2,22 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ScrapeWebsiteJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Job;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Queue;
 
 class JobControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+
     public function testStoreMethod()
     {
+        Queue::fake();
+
         $payload = [
             'urls' => ['http://example.com'],
             'selectors' => ['h1', 'p']
@@ -38,6 +43,8 @@ class JobControllerTest extends TestCase
         $this->assertEquals($payload['urls'], $job->urls);
         $this->assertEquals($payload['selectors'], $job->selectors);
 
+        // Check that the job has been added to the queue
+        Queue::assertPushed(ScrapeWebsiteJob::class);
     }
 
     public function testShowMethod()
@@ -73,5 +80,25 @@ class JobControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseMissing('jobs', ['id' => $job->id]);
+    }
+
+    public function testJobProcessing()
+    {
+        $this->withoutExceptionHandling();
+
+        // Create a job instance
+        $job = Job::create([
+            'urls' => ['http://example.com'],
+            'selectors' => ['h1', 'p'],
+            'status' => 'queued'
+        ]);
+
+        // Create and process the job
+        $scrapeJob = new ScrapeWebsiteJob($job);
+        $scrapeJob->handle();
+
+        // Check job status after execution
+        $job = $job->fresh(); // Receive an updated record
+        $this->assertEquals('completed', $job->status);
     }
 }
