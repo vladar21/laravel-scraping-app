@@ -48,7 +48,11 @@ class JobController extends Controller
             return response()->json(['error' => 'An error occurred during scraping: ' . $e->getMessage()], 500);
         }
 
-        // Return response or continue...
+        // Return response
+        return response()->json([
+            'success' => true,
+            'data' => $scrapedData,
+        ]);
 
     }
 
