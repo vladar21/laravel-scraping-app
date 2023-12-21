@@ -58,7 +58,13 @@ class JobController extends Controller
 
     public function show($id)
     {
-        // Retrieve and return a job by ID
+        $job = Job::find($id);
+
+        if (!$job) {
+            return response()->json(['error' => 'Job not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json(['job' => $job]);
     }
 
     public function destroy($id)
