@@ -59,4 +59,19 @@ class JobControllerTest extends TestCase
                 ]
             ]);
     }
+
+    public function testDestroyMethod()
+    {
+        // Create a job instance for testing
+        $job = Job::create([
+            'urls' => ['http://example.com'],
+            'selectors' => ['h1', 'p']
+        ]);
+
+        $response = $this->json('DELETE', "/api/jobs/{$job->id}");
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertDatabaseMissing('jobs', ['id' => $job->id]);
+    }
 }
