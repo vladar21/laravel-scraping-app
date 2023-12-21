@@ -2,17 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\Job;
+use App\Models\Job as MyJob;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
-class ScrapeWebsiteJob extends Job
+class ScrapeWebsiteJob implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $scrapingJob;
 
-    public function __construct(Job $job)
+    public function __construct(MyJob $job)
     {
         $this->scrapingJob = $job;
     }

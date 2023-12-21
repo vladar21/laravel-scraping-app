@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Jobs\ScrapeWebsiteJob;
 use App\Models\Job;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\BrowserKit\HttpBrowser;
-use Symfony\Component\HttpClient\HttpClient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

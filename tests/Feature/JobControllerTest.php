@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\ScrapeWebsiteJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Job as Job;
+use App\Models\Job as MyJob;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Queue;
 
@@ -35,7 +35,7 @@ class JobControllerTest extends TestCase
         // Assert that the job with given URLs and selectors is stored
 
         // Fetch the latest job entry
-        $job = Job::latest()->first();
+        $job = MyJob::latest()->first();
 
         $this->assertNotNull($job, 'No job record found in database');
 
@@ -50,7 +50,7 @@ class JobControllerTest extends TestCase
     public function testShowMethod()
     {
         // Create a job instance for testing
-        $job = Job::create([
+        $job = MyJob::create([
             'urls' => ['http://example.com'],
             'selectors' => ['h1', 'p']
         ]);
@@ -69,7 +69,7 @@ class JobControllerTest extends TestCase
     public function testDestroyMethod()
     {
         // Create a job instance for testing
-        $job = Job::create([
+        $job = MyJob::create([
             'urls' => ['http://example.com'],
             'selectors' => ['h1', 'p']
         ]);
@@ -86,7 +86,7 @@ class JobControllerTest extends TestCase
         $this->withoutExceptionHandling();
 
         // Create a job instance
-        $job = Job::create([
+        $job = MyJob::create([
             'urls' => ['http://example.com'],
             'selectors' => ['h1', 'p'],
             'status' => 'queued'
