@@ -1,0 +1,22 @@
+version: '3'
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        environment:
+            DB_HOST: db
+            DB_DATABASE: ${DB_DATABASE}  # Используйте значения из .env
+            DB_USERNAME: ${DB_USERNAME}  # Используйте значения из .env
+            DB_PASSWORD: ${DB_PASSWORD}  # Используйте значения из .env
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}  # Используйте значения из .env
+            MYSQL_USER: ${DB_USERNAME}  # Используйте значения из .env
+            MYSQL_PASSWORD: ${DB_PASSWORD}  # Используйте значения из .env
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # Замените на значение по умолчанию или своё
