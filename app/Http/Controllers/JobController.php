@@ -45,7 +45,13 @@ class JobController extends Controller
             return response()->json(['error' => 'Job not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json(['job' => $job]);
+        return response()->json([
+            'job_id' => $job->id,
+            'urls' => $job->urls,
+            'selectors' => $job->selectors,
+            'status' => $job->status,
+            'scraped_data' => $job->scraped_data
+        ]);
     }
 
     public function destroy($id)

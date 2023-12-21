@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
@@ -16,14 +13,11 @@ return new class extends Migration
             $table->json('urls'); // Storing array of URLs
             $table->json('selectors'); // HTML/CSS selectors
             $table->json('scraped_data')->nullable(); // Store the scraped data
+            $table->string('status')->default('queued'); // Add a status field
             $table->timestamps();
         });
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('jobs');
