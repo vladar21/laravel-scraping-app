@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\ScrapeWebsiteJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Job;
+use App\Models\Job as Job;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Queue;
 
@@ -60,10 +60,9 @@ class JobControllerTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'job' => [
-                    'urls' => ['http://example.com'],
-                    'selectors' => ['h1', 'p']
-                ]
+                'job_id' => $job->id,
+                'urls' => ['http://example.com'],
+                'selectors' => ['h1', 'p'],
             ]);
     }
 
