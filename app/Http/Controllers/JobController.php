@@ -10,6 +10,18 @@ class JobController extends Controller
     public function store(Request $request)
     {
         // Validate and create a job
+        $validatedData = $request->validate([
+            'urls' => 'required|array',
+            'urls.*' => 'required|url',
+            'selectors' => 'required|array',
+        ]);
+
+        $job = new Job();
+        $job->urls = $validatedData['urls'];
+        $job->selectors = $validatedData['selectors'];
+        $job->save();
+
+        // Continue with scraping...
     }
 
     public function show($id)
