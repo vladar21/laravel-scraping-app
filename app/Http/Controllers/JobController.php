@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Symfony\Component\BrowserKit\HttpBrowser;
+use Symfony\Component\HttpClient\HttpClient;
 
 class JobController extends Controller
 {
@@ -22,6 +24,23 @@ class JobController extends Controller
         $job->save();
 
         // Continue with scraping...
+        $browser = new HttpBrowser(HttpClient::create());
+        $scrapedData = [];
+
+        foreach ($validatedData['urls'] as $url) {
+            $crawler = $browser->request('GET', $url);
+            foreach ($validatedData['selectors'] as $selector) {
+                $scrapedData[$url][$selector] = $crawler->filter($selector)->each(function ($node) {
+                    return $node->text();
+                });
+            }
+        }
+
+        $job->scraped_data = $scrapedData;
+        $job->save();
+
+        // Return response or continue...
+
     }
 
     public function show($id)
