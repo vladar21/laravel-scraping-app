@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Job;
+use Illuminate\Http\Response;
 
 class JobControllerTest extends TestCase
 {
@@ -37,5 +38,25 @@ class JobControllerTest extends TestCase
         $this->assertEquals($payload['urls'], $job->urls);
         $this->assertEquals($payload['selectors'], $job->selectors);
 
+    }
+
+    public function testShowMethod()
+    {
+        // Create a job instance for testing
+        $job = Job::create([
+            'urls' => ['http://example.com'],
+            'selectors' => ['h1', 'p']
+        ]);
+
+        $response = $this->json('GET', "/api/jobs/{$job->id}");
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'job' => [
+                    'urls' => ['http://example.com'],
+                    'selectors' => ['h1', 'p']
+                ]
+            ]);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Exception;
 
 class JobController extends Controller
