@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
+use Illuminate\Http\Request;
+use Exception;
 
 class JobController extends Controller
 {
@@ -24,20 +26,27 @@ class JobController extends Controller
         $job->save();
 
         // Continue with scraping...
-        $browser = new HttpBrowser(HttpClient::create());
-        $scrapedData = [];
+        try {
+            $browser = new HttpBrowser(HttpClient::create());
+            $scrapedData = [];
 
-        foreach ($validatedData['urls'] as $url) {
-            $crawler = $browser->request('GET', $url);
-            foreach ($validatedData['selectors'] as $selector) {
-                $scrapedData[$url][$selector] = $crawler->filter($selector)->each(function ($node) {
-                    return $node->text();
-                });
+            foreach ($validatedData['urls'] as $url) {
+                $crawler = $browser->request('GET', $url);
+                foreach ($validatedData['selectors'] as $selector) {
+                    $scrapedData[$url][$selector] = $crawler->filter($selector)->each(function ($node) {
+                        return $node->text();
+                    });
+                }
             }
-        }
 
-        $job->scraped_data = $scrapedData;
-        $job->save();
+            $job->scraped_data = $scrapedData;
+            $job->save();
+
+        }catch(Exception $e){
+            // Log the error or handle it as needed
+            Log::error('Scraping error: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred during scraping: ' . $e->getMessage()], 500);
+        }
 
         // Return response or continue...
 
