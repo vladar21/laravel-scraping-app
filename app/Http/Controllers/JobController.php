@@ -70,7 +70,15 @@ class JobController extends Controller
 
     public function destroy($id)
     {
-        // Delete a job by ID
+        $job = Job::find($id);
+
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $job->delete();
+
+        return response()->json(['message' => 'Job deleted successfully'], Response::HTTP_OK);
     }
 }
 
