@@ -9,6 +9,7 @@ This Laravel application is designed to manage and execute web scraping tasks. I
 - Create Scraping Jobs: Submit a list of URLs along with the HTML/CSS selectors.
 - View Job Details: Access the detailed results and status of each scraping job.
 - Delete Jobs: Remove scraping jobs from the system.
+- Asynchronous Processing: Jobs are processed in the background, ensuring efficient handling of multiple tasks.
 
 ## Getting Started
 
@@ -17,6 +18,9 @@ This Laravel application is designed to manage and execute web scraping tasks. I
 - PHP >= 8.1
 - Composer
 - MySQL or SQLite database
+- Optional, for containerized setup:
+  * Docker Compose version v2.22.0
+  * Docker version 24.0.6
 
 ### Installation
 
@@ -34,9 +38,7 @@ This Laravel application is designed to manage and execute web scraping tasks. I
 
 4. Setup Environment
 
-    Copy the .env.example file to .env and configure your database settings.
-    ```
-   cp .env.example .env
+- Create .env file
 
 5. Generate Application Key
     ```
@@ -53,6 +55,13 @@ This Laravel application is designed to manage and execute web scraping tasks. I
   php artisan serve
 
 - Access the application at: http://localhost:8000
+
+### Using Docker
+
+Build and start the containers:
+```
+docker-compose up --build
+```
 
 ### API Usage
 
