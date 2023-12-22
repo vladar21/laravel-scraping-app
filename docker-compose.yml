@@ -1,22 +1,57 @@
-version: '3'
+version: '3.9'
+
 services:
+    # MySQL service definition
+    db:
+        build:
+            context: ./docker-compose/proxy
+            dockerfile: Dockerfile-mysql
+        container_name: mysql
+        ports:
+            - "3307:3306"
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: unless-stopped
+        environment:
+            - MYSQL_HOST=${DB_HOST}
+            - MYSQL_PORT=${DB_PORT}
+            - MYSQL_USER=${DB_USERNAME}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_DATABASE=${DB_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+        command: --default-authentication-plugin=mysql_native_password --sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION" --skip-ssl
+        networks:
+            frontnet:
+                ipv4_address: 172.30.0.3
+
     web:
         build:
-            context: .
+            context: ./docker-compose/proxy
             dockerfile: Dockerfile
+        container_name: lsa
         ports:
             - "8000:8000"
+        volumes:
+            - .:/var/www/html
         depends_on:
-            - db
+            db:
+                condition: service_healthy
         environment:
             DB_HOST: db
-            DB_DATABASE: ${DB_DATABASE}  # Используйте значения из .env
-            DB_USERNAME: ${DB_USERNAME}  # Используйте значения из .env
-            DB_PASSWORD: ${DB_PASSWORD}  # Используйте значения из .env
-    db:
-        image: mysql:5.7
-        environment:
-            MYSQL_DATABASE: ${DB_DATABASE}  # Используйте значения из .env
-            MYSQL_USER: ${DB_USERNAME}  # Используйте значения из .env
-            MYSQL_PASSWORD: ${DB_PASSWORD}  # Используйте значения из .env
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # Замените на значение по умолчанию или своё
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+        networks:
+            frontnet:
+                ipv4_address: 172.30.0.4
+
+# Define a custom network with a predefined subnet
+networks:
+    frontnet:
+        ipam:
+            config:
+                - subnet: 172.30.0.0/16 # Predefined subnet for the custom network

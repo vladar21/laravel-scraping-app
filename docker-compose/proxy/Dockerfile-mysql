@@ -1,0 +1,5 @@
+# Use the specified version of MySQL
+FROM mysql:8.0.29
+
+RUN echo 'CREATE USER IF NOT EXISTS "newuser"@"172.30.0.3" IDENTIFIED BY "password";' > /docker-entrypoint-initdb.d/init.sql && \
+    echo 'GRANT ALL PRIVILEGES ON *.* TO "newuser"@"172.30.0.3" WITH GRANT OPTION;' >> /docker-entrypoint-initdb.d/init.sql
