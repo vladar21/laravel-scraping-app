@@ -40,6 +40,34 @@ This Laravel application is designed to manage and execute web scraping tasks. I
 
 - Create .env file
 
+    Example:
+    ```bash
+    APP_NAME=Laravel
+    APP_ENV=development
+    APP_KEY=
+    APP_DEBUG=true
+    APP_URL=http://lsa.local
+    
+    LOG_CHANNEL=stack
+    LOG_DEPRECATIONS_CHANNEL=null
+    LOG_LEVEL=debug
+    
+    DB_CONNECTION=mysql
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_DATABASE=lsa
+    DB_USERNAME=lsa_user
+    DB_PASSWORD=lsa_password
+    DB_ROOT_PASSWORD=root
+    
+    BROADCAST_DRIVER=log
+    CACHE_DRIVER=file
+    FILESYSTEM_DISK=local
+    QUEUE_CONNECTION=database
+    SESSION_DRIVER=file
+    SESSION_LIFETIME=120
+    ```
+
 5. Generate Application Key
     ```
    php artisan key:generate
